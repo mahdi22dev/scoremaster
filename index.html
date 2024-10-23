@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Best Free Score Prediction App</title>
+    <style>
+      * {
+        box-sizing: border-box; /* Apply box-sizing globally */
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to right, #38a169, #3182ce);
+        min-height: 100vh;
+        margin: 0;
+        padding-top: 60px; /* Add padding to prevent content overlap with navbar */
+        display: flex;
+        justify-content: center; /* Center content horizontally */
+        align-items: flex-start; /* Start aligning items from the top */
+        flex-direction: column;
+      }
+
+      .navbar {
+        width: 100%;
+        background: linear-gradient(
+          to right,
+          #3182ce,
+          #38a169
+        ); /* Reversed background gradient */
+        padding: 15px;
+        color: white;
+        font-size: 18px;
+        text-align: center;
+        font-weight: bold;
+        position: fixed; /* Fix the navbar to the top */
+        top: 0;
+        left: 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow */
+        z-index: 1000; /* Ensure the navbar is above other elements */
+      }
+
+      .form-container {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px; /* Max width for the form */
+        text-align: center;
+        margin: 20px auto; /* Center the form container */
+        /* Add margin auto to center horizontally */
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+      }
+
+      .form-group label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        outline: none;
+        transition: border-color 0.3s;
+      }
+
+      .form-group input:focus {
+        border-color: #38a169;
+      }
+
+      .submit-btn {
+        background-color: #38a169;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      .submit-btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+
+      .tip-container {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: 100%;
+        margin: 20px auto; /* Center the tip container */
+        text-align: left;
+      }
+
+      .results-container {
+        margin-top: 20px;
+        background-color: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        position: relative;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+      }
+
+      /* Media Queries for Responsive Design */
+      @media (max-width: 600px) {
+        .navbar {
+          font-size: 16px; /* Adjust font size for smaller screens */
+        }
+
+        .form-container,
+        .tip-container {
+          max-width: 90%; /* Allow more width on smaller screens */
+          margin: 10px auto; /* Center the form on smaller screens */
+        }
+
+        .submit-btn {
+          padding: 12px; /* Slightly larger button for easier clicking */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <div class="navbar">Score Master</div>
+
+    <!-- Tip Section -->
+    <div class="tip-container">
+      <strong>How to use this app:</strong>
+      <p>
+        Enter the expected goals (XG) for both teams and click
+        <strong>'Submit Prediction'</strong> to calculate the likely score
+        outcomes for the match.
+      </p>
+      <p>
+        You can get XG values from sports apps and websites such as
+        <strong>Flashscore</strong>, which provide detailed match statistics.
+        Please note that XG data is generally available only for matches in
+        major leagues, such as the <strong>English Premier League</strong>,
+        <strong>La Liga</strong> in Spain, and other top-tier competitions.
+      </p>
+    </div>
+
+    <div class="form-container">
+      <form id="predictionForm">
+        <div class="form-group">
+          <label for="xgTeam1">XG Team 1</label>
+          <input type="text" id="xgTeam1" placeholder="Team 1" />
+        </div>
+
+        <div class="form-group">
+          <label for="xgTeam2">XG Team 2</label>
+          <input type="text" id="xgTeam2" placeholder="Team 2" />
+        </div>
+
+        <button type="submit" class="submit-btn">Submit Prediction</button>
+      </form>
+
+      <div
+        id="resultsContainer"
+        class="results-container"
+        style="display: none"
+      >
+        <h2>Prediction Results</h2>
+        <div id="firstHalfResults"></div>
+        <div id="secondHalfResults"></div>
+        <div id="fullMatchResults"></div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal" style="display: none">
+      <div class="modal-content">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <h2>Input Error</h2>
+        <p>
+          Please make sure the values entered for <strong>XG1</strong> and
+          <strong>XG2</strong> are valid numbers, and that the code is correct
+          and functioning properly.
+        </p>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
