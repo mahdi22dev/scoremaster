@@ -5,6 +5,7 @@ const resultsContainer = document.getElementById("resultsContainer");
 const firstHalfResults = document.getElementById("firstHalfResults");
 const secondHalfResults = document.getElementById("secondHalfResults");
 const fullMatchResults = document.getElementById("fullMatchResults");
+const lockerBtn = document.getElementById("fullMatchResults");
 const modal = document.getElementById("modal");
 
 form.addEventListener("submit", async (e) => {
