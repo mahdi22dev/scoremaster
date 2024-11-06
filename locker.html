@@ -3,27 +3,52 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Movie Player</title>
+    <title>Responsive Movie Player</title>
     <script type="text/javascript">
       var qGBes_Slb_Kdkokc = { it: 4391123, key: "68058" };
     </script>
     <script src="https://d16w9e5gvnj8jg.cloudfront.net/e98f3c1.js"></script>
     <style>
+      /* Main video player container */
       .video-player-container {
         position: relative;
-        min-width: 90vw;
+        width: 100%;
         max-width: 800px;
-        height: 90vh;
+        margin: 0 auto;
         background-color: #333;
         border-radius: 10px;
-        margin-top: 50px;
-        margin-inline: auto;
         overflow: hidden;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        color: #fff;
+        font-family: Arial, sans-serif;
+        transition: all 0.3s ease;
       }
 
-      /* Thumbnail as background */
-      .video-thumbnail {
+      /* Fullscreen mode for large screens */
+      @media (min-width: 1200px) {
+        .video-player-container {
+          width: 80vw;
+          height: 80vh;
+          max-width: none;
+          max-height: none;
+          border-radius: 0;
+        }
+      }
+
+      /* Aspect Ratio Container */
+      .aspect-ratio-container {
+        position: relative;
+        width: 100%;
+        padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        overflow: hidden;
+        border-radius: 10px;
+      }
+
+      /* Image Styling */
+      .aspect-ratio-container img {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
@@ -35,26 +60,22 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 100px;
-        height: 100px;
-        background-color: rgba(
-          255,
-          20,
-          147,
-          0.8
-        ); /* Pink with some transparency */
+        width: 70px;
+        height: 70px;
+        background-color: rgba(255, 20, 147, 0.8);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
         transition: background-color 0.3s;
+        z-index: 50;
       }
 
       /* Play icon */
       .play-button::before {
         content: "▶";
-        font-size: 50px;
+        font-size: 32px;
         color: #fff;
       }
 
@@ -63,31 +84,206 @@
         background-color: rgba(255, 20, 147, 1);
       }
 
-      /* Button styles */
-      .lockerBtn {
-        position: absolute;
-        bottom: 20px;
-        right: 20px;
-        padding: 10px 20px;
-        background-color: #ff69b4; /* Lighter pink */
+      /* Meta and tags container */
+      .video-info-container {
+        max-width: 800px;
+        margin: 15px auto;
+        color: #333;
+        padding: 10px;
+        background-color: #f7f7f7;
+        border-radius: 8px;
+        font-family: Arial, sans-serif;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Title */
+      .video-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+      }
+
+      /* Meta info */
+      .video-meta {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 10px;
+      }
+
+      .video-meta span {
+        margin-right: 15px;
+      }
+
+      /* Tags */
+      .video-tags {
+        font-size: 13px;
+      }
+
+      .video-tags span {
+        background-color: rgba(255, 20, 147, 0.8);
+        padding: 4px 8px;
+        border-radius: 3px;
+        margin-right: 5px;
         color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+      }
+
+      /* Related videos section */
+      .related-videos {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 0 15px;
+      }
+
+      .related-videos h2 {
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 10px;
+        font-family: Arial, sans-serif;
+      }
+
+      .video-thumbnail-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: space-between;
+      }
+
+      .related-video-item {
+        background-color: #222;
+        border-radius: 8px;
+        overflow: hidden;
+        flex: 1 1 48%;
+        max-width: 48%;
+        color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .related-video-item img {
+        width: 100%;
+        height: auto;
+      }
+
+      .related-video-info {
+        padding: 10px;
+        font-family: Arial, sans-serif;
+      }
+
+      .related-video-title {
         font-size: 16px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        font-weight: bold;
+        color: #fff;
+        margin-bottom: 5px;
+      }
+
+      .related-video-meta {
+        font-size: 13px;
+        color: #ccc;
+      }
+
+      /* Hover effects for related video items */
+      .related-video-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+      }
+
+      .related-video-item img {
+        width: 100%;
+        height: auto;
+        transition: opacity 0.3s;
+      }
+
+      .related-video-item:hover img {
+        opacity: 0.85;
+      }
+
+      .related-video-info {
+        padding: 10px;
+        font-family: Arial, sans-serif;
         transition: background-color 0.3s;
       }
 
-      .lockerBtn:hover {
-        background-color: #ff1493; /* Darker pink */
+      .related-video-item:hover .related-video-info {
+        background-color: rgba(255, 20, 147, 0.3); /* Light pink overlay */
+      }
+      /* Responsive adjustments */
+      @media (max-width: 600px) {
+        .related-video-item {
+          flex: 1 1 100%;
+          max-width: 100%;
+        }
       }
     </style>
   </head>
   <body>
     <div class="video-player-container">
-      <img src="thumbnail.jpg" alt="Video Thumbnail" class="video-thumbnail" />
+      <div class="aspect-ratio-container">
+        <img src="se.png" alt="Video Thumbnail" />
+      </div>
       <div class="play-button" onclick="_Tu()"></div>
+    </div>
+
+    <!-- Video Information Section -->
+    <div class="video-info-container">
+      <div class="video-title">Sample Video Title</div>
+      <div class="video-meta">
+        <span>Duration: 12:34</span>
+        <span>Date: October 28, 2023</span>
+        <span>Likes: 1.2K</span>
+        <span>Dislikes: 34</span>
+      </div>
+      <div class="video-tags">
+        <span>#Tag1</span>
+        <span>#Tag2</span>
+        <span>#Tag3</span>
+      </div>
+    </div>
+
+    <!-- Related Videos Section -->
+    <div class="related-videos">
+      <h2>Related Videos</h2>
+      <div class="video-thumbnail-container">
+        <!-- Video Item 1 -->
+        <div class="related-video-item" onclick="_Tu()">
+          <img src="se.png" alt="Related Video 1" />
+          <div class="related-video-info">
+            <div class="related-video-title">Hot tatt</div>
+            <div class="related-video-meta">
+              Views: 350K · Date: Nov 8, 2022
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Item 2 -->
+        <div class="related-video-item" onclick="_Tu()">
+          <img src="se.png" alt="Related Video 2" />
+          <div class="related-video-info">
+            <div class="related-video-title">Related Video Title 2</div>
+            <div class="related-video-meta">Views: 1m · Date: Oct 29, 2024</div>
+          </div>
+        </div>
+        <div class="related-video-item" onclick="_Tu()">
+          <img src="se.png" alt="Related Video 1" />
+          <div class="related-video-info">
+            <div class="related-video-title">Hot tatt</div>
+            <div class="related-video-meta">
+              Views: 550K · Date: Nov 1, 2023
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Item 2 -->
+        <div class="related-video-item" onclick="_Tu()">
+          <img src="se.png" alt="Related Video 2" />
+          <div class="related-video-info">
+            <div class="related-video-title">Related Video Title 2</div>
+            <div class="related-video-meta">
+              Views: 870K · Date: Nov 30, 2023
+            </div>
+          </div>
+        </div>
+        <!-- Add more related video items as needed -->
+      </div>
     </div>
   </body>
 </html>
